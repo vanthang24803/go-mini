@@ -1,11 +1,16 @@
 package config
 
 type Config struct {
-	AppName  string
-	Server   ServerConfig
-	Logger   LoggerConfig
-	Database DatabaseConfig
-	Redis    RedisConfig
+	AppName string
+	Server  ServerConfig
+	Logger  LoggerConfig
+	MongoDB MongoConfig
+	Redis   RedisConfig
+}
+
+type MongoConfig struct {
+	URI      string
+	Database string
 }
 
 type ServerConfig struct {
@@ -28,6 +33,8 @@ type DatabaseConfig struct {
 }
 
 type RedisConfig struct {
-	Host string
-	Port string
+	Host     string
+	Port     string
+	Password string
+	DB       int
 }
