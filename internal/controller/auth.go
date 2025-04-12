@@ -6,7 +6,6 @@ import (
 	"github.com/vanthang24803/mini/internal/dto"
 	"github.com/vanthang24803/mini/internal/service"
 	"github.com/vanthang24803/mini/pkg/logger"
-	"github.com/vanthang24803/mini/pkg/util"
 	"go.uber.org/zap"
 )
 
@@ -29,17 +28,17 @@ func (c *AuthController) Login(ctx *fiber.Ctx) error {
 	req := new(dto.LoginRequest)
 
 	if err := ctx.BodyParser(req); err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(util.ErrorResponse(err.Error()))
+		return ctx.Status(fiber.StatusBadRequest).JSON(err.Error())
 	}
 
 	if err := c.validate.Struct(req); err != nil {
 		c.log.Error("Validation failed", zap.Error(err))
-		return ctx.Status(fiber.StatusBadRequest).JSON(util.ErrorResponse(err.Error()))
+		return ctx.Status(fiber.StatusBadRequest).JSON(err.Error())
 	}
 
 	rs, err := c.authService.Login(req)
 	if err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(util.ErrorResponse(err))
+		return ctx.Status(fiber.StatusBadRequest).JSON(err)
 	}
 	return ctx.JSON(rs)
 }
@@ -48,16 +47,16 @@ func (c *AuthController) Register(ctx *fiber.Ctx) error {
 	req := new(dto.RegisterRequest)
 
 	if err := ctx.BodyParser(req); err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(util.ErrorResponse(err.Error()))
+		return ctx.Status(fiber.StatusBadRequest).JSON(err.Error())
 	}
 
 	if err := c.validate.Struct(req); err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(util.ErrorResponse(err.Error()))
+		return ctx.Status(fiber.StatusBadRequest).JSON(err.Error())
 	}
 
 	rs, err := c.authService.Register(req)
 	if err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(util.ErrorResponse(err))
+		return ctx.Status(fiber.StatusBadRequest).JSON(err)
 	}
 
 	return ctx.JSON(rs)

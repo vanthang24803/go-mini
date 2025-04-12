@@ -4,19 +4,33 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/vanthang24803/mini/pkg/util"
+	"github.com/google/uuid"
 )
 
 func NotFoundHandler() fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		return c.Status(fiber.StatusNotFound).JSON(&util.BaseResponse{
-			Status:  fiber.StatusNotFound,
-			Success: false,
-			Error:   "Route " + c.Path() + " not found",
-			Metadata: util.Metadata{
-				Timestamp: time.Now().UTC(),
-				Version:   "v1.0",
-			},
+
+		requestID := c.Get("X-Request-ID")
+		userAgent := c.Get("User-Agent")
+
+		if requestID == "" {
+			requestID = uuid.New().String()
+		}
+
+		metadata := Metadata{
+			Timestamp: time.Now(),
+			Version:   "1.0",
+			Path:      c.Path(),
+			Method:    c.Method(),
+			RequestID: requestID,
+			Device:    userAgent,
+		}
+
+		return c.Status(fiber.StatusNotFound).JSON(&Response{
+			Status:   fiber.StatusNotFound,
+			Success:  false,
+			Error:    "Route " + c.Path() + " not found",
+			Metadata: metadata,
 		})
 	}
 }

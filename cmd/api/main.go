@@ -34,7 +34,7 @@ func main() {
 	})
 
 	app.Use(fiberLogger.New())
-	app.Use(middleware.SuccessHandler)
+	app.Use(middleware.InterceptorHandler)
 	app.Use(recover.New())
 
 	router.SetupRoutes(app)

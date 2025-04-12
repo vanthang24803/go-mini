@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/vanthang24803/mini/pkg/util"
+	"github.com/google/uuid"
 )
 
 func ErrorHandler(c *fiber.Ctx, err error) error {
@@ -14,13 +14,25 @@ func ErrorHandler(c *fiber.Ctx, err error) error {
 		code = e.Code
 	}
 
-	return c.Status(code).JSON(&util.BaseResponse{
-		Status:  fiber.StatusNotFound,
-		Success: false,
-		Error:   err.Error(),
-		Metadata: util.Metadata{
-			Timestamp: time.Now().UTC(),
-			Version:   "v1.0",
-		},
+	requestID := c.Get("X-Request-ID")
+	userAgent := c.Get("User-Agent")
+
+	if requestID == "" {
+		requestID = uuid.New().String()
+	}
+	metadata := Metadata{
+		Timestamp: time.Now(),
+		Version:   "1.0",
+		Path:      c.Path(),
+		Method:    c.Method(),
+		Device:    userAgent,
+		RequestID: requestID,
+	}
+
+	return c.Status(code).JSON(&Response{
+		Status:   code,
+		Success:  false,
+		Error:    err.Error(),
+		Metadata: metadata,
 	})
 }
