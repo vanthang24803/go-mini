@@ -11,8 +11,8 @@ type Metadata struct {
 type BaseResponse struct {
 	Status   int      `json:"status"`
 	Success  bool     `json:"success"`
-	Message  string   `json:"message"`
+	Message  any      `json:"message,omitempty"`
 	Data     any      `json:"data,omitempty"`
-	Error    string   `json:"error,omitempty"`
+	Error    any      `json:"error,omitempty"`
 	Metadata Metadata `json:"metadata"`
 }

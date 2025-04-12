@@ -1,4 +1,4 @@
-package util
+package common
 
 import (
 	"fmt"
@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/vanthang24803/mini/pkg/constant"
 )
 
 type JWTClaim struct {
@@ -20,13 +21,13 @@ func GenerateJWT(userID uint, username string) (string, string, error) {
 		UserID:   userID,
 		Username: username,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(ACCESS_TOKEN_EXPIRATION)),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(constant.ACCESS_TOKEN_EXPIRATION)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 		},
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	accessToken, err := token.SignedString([]byte(os.Getenv(JWT_SECRET_KEY)))
+	accessToken, err := token.SignedString([]byte(os.Getenv(constant.JWT_SECRET_KEY)))
 	if err != nil {
 		return "", "", err
 	}
@@ -36,13 +37,13 @@ func GenerateJWT(userID uint, username string) (string, string, error) {
 		UserID:   userID,
 		Username: username,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(REFRESH_TOKEN_EXPIRATION)),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(constant.REFRESH_TOKEN_EXPIRATION)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 		},
 	}
 
 	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaims)
-	refreshTokenString, err := refreshToken.SignedString([]byte(os.Getenv(JWT_REFRESH_KEY)))
+	refreshTokenString, err := refreshToken.SignedString([]byte(os.Getenv(constant.JWT_REFRESH_KEY)))
 	if err != nil {
 		return "", "", err
 	}
@@ -55,7 +56,7 @@ func ValidateToken(tokenString string) (*JWTClaim, error) {
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", t.Header["alg"])
 		}
-		return []byte(os.Getenv(JWT_SECRET_KEY)), nil
+		return []byte(os.Getenv(constant.JWT_SECRET_KEY)), nil
 	})
 
 	if err != nil {
@@ -75,7 +76,7 @@ func ValidateRefreshToken(tokenString string) (*JWTClaim, error) {
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", t.Header["alg"])
 		}
-		return []byte(os.Getenv(JWT_REFRESH_KEY)), nil
+		return []byte(os.Getenv(constant.JWT_REFRESH_KEY)), nil
 	})
 
 	if err != nil {

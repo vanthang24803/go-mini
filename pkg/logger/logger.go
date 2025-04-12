@@ -16,16 +16,6 @@ var log *zap.Logger
 func Init() {
 	cfg := config.New()
 
-	_ = os.Mkdir("logs", 0755)
-
-	logFile := &lumberjack.Logger{
-		Filename:   filepath.Join("logs", "logs_"+time.Now().Format("2006-01-02")+".log"),
-		MaxAge:     cfg.Logger.MaxAge,
-		MaxBackups: 30,
-		MaxSize:    100,
-		Compress:   true,
-	}
-
 	encoderConfig := zapcore.EncoderConfig{
 		TimeKey:        "timestamp",
 		LevelKey:       "level",
@@ -42,15 +32,26 @@ func Init() {
 
 	var core zapcore.Core
 	if cfg.Logger.Production {
+		_ = os.Mkdir("logs", 0755)
+		logFile := &lumberjack.Logger{
+			Filename:   filepath.Join("logs", "logs_"+time.Now().Format("2006-01-02")+".log"),
+			MaxAge:     cfg.Logger.MaxAge,
+			MaxBackups: 30,
+			MaxSize:    100,
+			Compress:   true,
+		}
+
 		core = zapcore.NewCore(
 			zapcore.NewJSONEncoder(encoderConfig),
 			zapcore.AddSync(logFile),
 			zap.NewAtomicLevelAt(zapcore.InfoLevel),
 		)
 	} else {
+		// In development, only write to console
+		consoleWriter := zapcore.Lock(os.Stdout)
 		core = zapcore.NewCore(
 			zapcore.NewConsoleEncoder(encoderConfig),
-			zapcore.AddSync(logFile),
+			consoleWriter,
 			zap.NewAtomicLevelAt(zapcore.DebugLevel),
 		)
 	}

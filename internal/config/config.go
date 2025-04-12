@@ -4,33 +4,32 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
-	"github.com/vanthang24803/mini/pkg/util"
+	"github.com/vanthang24803/mini/pkg/constant"
 )
 
 func New() *Config {
 	godotenv.Load()
 
 	return &Config{
-		AppName: os.Getenv(util.APP_NAME),
+		AppName: os.Getenv(constant.APP_NAME),
 		Server: ServerConfig{
-			Port: ":" + getEnvOrDefault(util.APP_PORT, "3000"),
+			Port: ":" + getEnvOrDefault(constant.APP_PORT, "3000"),
 		},
 		Logger: LoggerConfig{
 			Level:      "info",
 			OutputPath: "logs",
 			MaxAge:     30,
-			Production: os.Getenv(util.ENV) == util.PRODUCTION,
+			Production: os.Getenv(constant.ENV) == "production",
 		},
-		Database: DatabaseConfig{
-			Host:     os.Getenv(util.DB_HOST),
-			Port:     os.Getenv(util.DB_PORT),
-			Username: os.Getenv(util.DB_USERNAME),
-			Password: os.Getenv(util.DB_PASSWORD),
-			Name:     os.Getenv(util.DB_NAME),
+		MongoDB: MongoConfig{
+			URI:      os.Getenv(constant.MONGODB_URI),
+			Database: os.Getenv(constant.MONGODB_DATABASE),
 		},
 		Redis: RedisConfig{
-			Host: os.Getenv(util.REDIS_HOST),
-			Port: os.Getenv(util.REDIS_PORT),
+			Host:     getEnvOrDefault(constant.REDIS_HOST, "localhost"),
+			Port:     getEnvOrDefault(constant.REDIS_PORT, "6379"),
+			Password: os.Getenv(constant.REDIS_PASSWORD),
+			DB:       0,
 		},
 	}
 }

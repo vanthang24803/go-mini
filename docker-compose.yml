@@ -1,17 +1,16 @@
 version: '3.8'
 
 services:
-  postgres:
-    image: postgres:latest
-    container_name: mini_postgres
+  mongodb:
+    image: mongo:latest
+    container_name: mini_mongodb
     environment:
-      POSTGRES_USER: ${DB_USERNAME}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME}
+      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD}
     ports:
-      - "${DB_PORT}:5432"
+      - "${MONGODB_PORT}:27017"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - mongodb_data:/data/db
     networks:
       - mini_network
 
@@ -26,7 +25,7 @@ services:
       - mini_network
 
 volumes:
-  postgres_data:
+  mongodb_data:
   redis_data:
 
 networks:
