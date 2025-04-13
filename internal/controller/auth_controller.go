@@ -5,6 +5,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/vanthang24803/mini/internal/dto"
 	"github.com/vanthang24803/mini/internal/service"
+	"github.com/vanthang24803/mini/pkg/common"
 	"github.com/vanthang24803/mini/pkg/logger"
 	"go.uber.org/zap"
 )
@@ -24,15 +25,15 @@ func NewAuthController() *AuthController {
 }
 
 func (c *AuthController) Login(ctx *fiber.Ctx) error {
-	c.log.Info("Login Handler")
 	req := new(dto.LoginRequest)
 
 	if err := ctx.BodyParser(req); err != nil {
+		c.log.Error("Failed to parse login request", zap.Error(err))
 		return ctx.Status(fiber.StatusBadRequest).JSON(err.Error())
 	}
 
 	if err := c.validate.Struct(req); err != nil {
-		c.log.Error("Validation failed", zap.Error(err))
+		c.log.Error("Validation failed for login request", zap.Error(err))
 		return ctx.Status(fiber.StatusBadRequest).JSON(err.Error())
 	}
 
@@ -47,10 +48,12 @@ func (c *AuthController) Register(ctx *fiber.Ctx) error {
 	req := new(dto.RegisterRequest)
 
 	if err := ctx.BodyParser(req); err != nil {
+		c.log.Error("Failed to parse register request", zap.Error(err))
 		return ctx.Status(fiber.StatusBadRequest).JSON(err.Error())
 	}
 
 	if err := c.validate.Struct(req); err != nil {
+		c.log.Error("Validation failed for register request", zap.Error(err))
 		return ctx.Status(fiber.StatusBadRequest).JSON(err.Error())
 	}
 
@@ -60,4 +63,21 @@ func (c *AuthController) Register(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.JSON(rs)
+}
+
+func (c *AuthController) Logout(ctx *fiber.Ctx) error {
+	payload, ok := ctx.Locals("info").(*common.JWTClaim)
+
+	if !ok {
+		c.log.Error("Unauthorized access attempt during logout")
+		return ctx.Status(fiber.StatusUnauthorized).JSON("Unauthorized")
+	}
+
+	err := c.authService.Logout(payload.UserID)
+
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(err)
+	}
+
+	return ctx.JSON("Logout successfully")
 }

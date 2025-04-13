@@ -17,16 +17,17 @@ func Init() {
 	cfg := config.New()
 
 	encoderConfig := zapcore.EncoderConfig{
-		TimeKey:        "timestamp",
+		TimeKey:        "time",
 		LevelKey:       "level",
 		NameKey:        "logger",
 		CallerKey:      "caller",
-		MessageKey:     "msg",
+		FunctionKey:    zapcore.OmitKey,
+		MessageKey:     "message",
 		StacktraceKey:  "stacktrace",
 		LineEnding:     zapcore.DefaultLineEnding,
 		EncodeLevel:    zapcore.LowercaseLevelEncoder,
 		EncodeTime:     zapcore.ISO8601TimeEncoder,
-		EncodeDuration: zapcore.SecondsDurationEncoder,
+		EncodeDuration: zapcore.StringDurationEncoder,
 		EncodeCaller:   zapcore.ShortCallerEncoder,
 	}
 
@@ -34,7 +35,7 @@ func Init() {
 	if cfg.Logger.Production {
 		_ = os.Mkdir("logs", 0755)
 		logFile := &lumberjack.Logger{
-			Filename:   filepath.Join("logs", "logs_"+time.Now().Format("2006-01-02")+".log"),
+			Filename:   filepath.Join("logs", "logs_"+time.Now().Format("2006-01-02")+".txt"),
 			MaxAge:     cfg.Logger.MaxAge,
 			MaxBackups: 30,
 			MaxSize:    100,
@@ -47,16 +48,24 @@ func Init() {
 			zap.NewAtomicLevelAt(zapcore.InfoLevel),
 		)
 	} else {
-		// In development, only write to console
 		consoleWriter := zapcore.Lock(os.Stdout)
 		core = zapcore.NewCore(
-			zapcore.NewConsoleEncoder(encoderConfig),
+			zapcore.NewJSONEncoder(encoderConfig),
 			consoleWriter,
 			zap.NewAtomicLevelAt(zapcore.DebugLevel),
 		)
 	}
 
-	log = zap.New(core, zap.AddCaller())
+	if cfg.Logger.Production {
+		log = zap.New(core,
+			zap.AddCaller(),
+			zap.AddStacktrace(zapcore.ErrorLevel),
+		)
+	} else {
+		log = zap.New(core,
+			zap.AddStacktrace(zapcore.WarnLevel),
+		)
+	}
 }
 
 func GetLogger() *zap.Logger {

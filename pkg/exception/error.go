@@ -48,6 +48,10 @@ var (
 		Code:    3001,
 		Message: "Rate limit exceeded",
 	}
+	ERROR_GENERATE_TOKEN = &Error{
+		Code:    3001,
+		Message: "Rate limit exceeded",
+	}
 
 	ERROR_EMAIL_EXISTED = &Error{
 		Code:    4000,
@@ -76,5 +80,17 @@ var (
 	ERROR_INVALID_CREDENTIAL = &Error{
 		Code:    4006,
 		Message: "Invalid credential",
+	}
+	ERROR_INSERT_TOKEN = &Error{
+		Code:    4007,
+		Message: "Insert token failed",
+	}
+	ERROR_INVALID_USER_ID = &Error{
+		Code:    4008,
+		Message: "Invalid user id",
+	}
+	ERROR_DELETE_TOKEN = &Error{
+		Code:    4009,
+		Message: "Delete token failed",
 	}
 )

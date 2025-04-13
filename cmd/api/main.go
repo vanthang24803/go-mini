@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/gofiber/fiber/v2"
-	fiberLogger "github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/vanthang24803/mini/internal/config"
 	"github.com/vanthang24803/mini/internal/middleware"
@@ -33,7 +32,8 @@ func main() {
 		ErrorHandler:          middleware.ErrorHandler,
 	})
 
-	app.Use(fiberLogger.New())
+	app.Use(middleware.LoggerInterceptor())
+
 	app.Use(middleware.InterceptorHandler)
 	app.Use(recover.New())
 
