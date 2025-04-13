@@ -22,6 +22,10 @@ var (
 		Code:    1003,
 		Message: "Forbidden access",
 	}
+	ERROR_INTERNAL_SERVER = &Error{
+		Code:    1004,
+		Message: "Internal server error",
+	}
 
 	ERROR_CODE_NOT_FOUND = &Error{
 		Code:    2000,
@@ -92,5 +96,9 @@ var (
 	ERROR_DELETE_TOKEN = &Error{
 		Code:    4009,
 		Message: "Delete token failed",
+	}
+	ERROR_USER_NOT_FOUND = &Error{
+		Code:    4010,
+		Message: "User not found",
 	}
 )
