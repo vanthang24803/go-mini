@@ -61,7 +61,7 @@ func InterceptorHandler(c *fiber.Ctx) error {
 			Data:     originalData,
 			Metadata: metadata,
 		})
-	} else if status == fiber.StatusBadRequest {
+	} else if status >= fiber.StatusBadRequest {
 		var originalData any
 		if err := json.Unmarshal(c.Response().Body(), &originalData); err != nil {
 			return nil
@@ -83,7 +83,7 @@ func InterceptorHandler(c *fiber.Ctx) error {
 		}
 
 		return c.JSON(&Response{
-			Status:   fiber.StatusBadRequest,
+			Status:   status,
 			Success:  false,
 			Error:    originalData,
 			Metadata: metadata,

@@ -22,6 +22,10 @@ var (
 		Code:    1003,
 		Message: "Forbidden access",
 	}
+	ERROR_INTERNAL_SERVER = &Error{
+		Code:    1004,
+		Message: "Internal server error",
+	}
 
 	ERROR_CODE_NOT_FOUND = &Error{
 		Code:    2000,
@@ -45,6 +49,10 @@ var (
 		Message: "Validation failed",
 	}
 	ERROR_CODE_RATE_LIMIT_EXCEEDED = &Error{
+		Code:    3001,
+		Message: "Rate limit exceeded",
+	}
+	ERROR_GENERATE_TOKEN = &Error{
 		Code:    3001,
 		Message: "Rate limit exceeded",
 	}
@@ -76,5 +84,21 @@ var (
 	ERROR_INVALID_CREDENTIAL = &Error{
 		Code:    4006,
 		Message: "Invalid credential",
+	}
+	ERROR_INSERT_TOKEN = &Error{
+		Code:    4007,
+		Message: "Insert token failed",
+	}
+	ERROR_INVALID_USER_ID = &Error{
+		Code:    4008,
+		Message: "Invalid user id",
+	}
+	ERROR_DELETE_TOKEN = &Error{
+		Code:    4009,
+		Message: "Delete token failed",
+	}
+	ERROR_USER_NOT_FOUND = &Error{
+		Code:    4010,
+		Message: "User not found",
 	}
 )

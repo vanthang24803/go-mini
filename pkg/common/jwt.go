@@ -10,12 +10,12 @@ import (
 )
 
 type JWTClaim struct {
-	UserID   uint   `json:"user_id"`
+	UserID   string `json:"user_id"`
 	Username string `json:"username"`
 	jwt.RegisteredClaims
 }
 
-func GenerateJWT(userID uint, username string) (string, string, error) {
+func GenerateJWT(userID string, username string) (string, string, error) {
 	// Access Token
 	claims := &JWTClaim{
 		UserID:   userID,
