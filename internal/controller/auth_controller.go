@@ -6,6 +6,7 @@ import (
 	"github.com/vanthang24803/mini/internal/dto"
 	"github.com/vanthang24803/mini/internal/service"
 	"github.com/vanthang24803/mini/pkg/common"
+	"github.com/vanthang24803/mini/pkg/exception"
 	"github.com/vanthang24803/mini/pkg/logger"
 	"go.uber.org/zap"
 )
@@ -28,12 +29,12 @@ func (c *AuthController) Login(ctx *fiber.Ctx) error {
 	req := new(dto.LoginRequest)
 
 	if err := ctx.BodyParser(req); err != nil {
-		c.log.Error("Failed to parse login request", zap.Error(err))
+		c.log.Error("failed to parse login request", zap.Error(err))
 		return ctx.Status(fiber.StatusBadRequest).JSON(err.Error())
 	}
 
 	if err := c.validate.Struct(req); err != nil {
-		c.log.Error("Validation failed for login request", zap.Error(err))
+		c.log.Error("validation failed for login request", zap.Error(err))
 		return ctx.Status(fiber.StatusBadRequest).JSON(err.Error())
 	}
 
@@ -48,12 +49,12 @@ func (c *AuthController) Register(ctx *fiber.Ctx) error {
 	req := new(dto.RegisterRequest)
 
 	if err := ctx.BodyParser(req); err != nil {
-		c.log.Error("Failed to parse register request", zap.Error(err))
+		c.log.Error("failed to parse register request", zap.Error(err))
 		return ctx.Status(fiber.StatusBadRequest).JSON(err.Error())
 	}
 
 	if err := c.validate.Struct(req); err != nil {
-		c.log.Error("Validation failed for register request", zap.Error(err))
+		c.log.Error("validation failed for register request", zap.Error(err))
 		return ctx.Status(fiber.StatusBadRequest).JSON(err.Error())
 	}
 
@@ -69,8 +70,8 @@ func (c *AuthController) Logout(ctx *fiber.Ctx) error {
 	payload, ok := ctx.Locals("info").(*common.JWTClaim)
 
 	if !ok {
-		c.log.Error("Unauthorized access attempt during logout")
-		return ctx.Status(fiber.StatusUnauthorized).JSON("Unauthorized")
+		c.log.Error("unauthorized access attempt during logout")
+		return ctx.Status(fiber.StatusUnauthorized).JSON(exception.ERROR_CODE_UNAUTHORIZED)
 	}
 
 	err := c.authService.Logout(payload.UserID)
@@ -79,5 +80,5 @@ func (c *AuthController) Logout(ctx *fiber.Ctx) error {
 		return ctx.Status(fiber.StatusBadRequest).JSON(err)
 	}
 
-	return ctx.JSON("Logout successfully")
+	return ctx.JSON("Logout successfully!")
 }

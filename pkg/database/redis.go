@@ -29,7 +29,6 @@ func InitRedis(cfg *config.Config) error {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 
-	// Test connection
 	if err := client.Ping(ctx).Err(); err != nil {
 		log.Error("Redis connection failed", zap.Error(err))
 		return fmt.Errorf("redis connection failed: %v", err)
@@ -47,8 +46,7 @@ func GetRedis() *redis.Client {
 	return RedisClient
 }
 
-// Helper functions for common Redis operations
-func Set(ctx context.Context, key string, value interface{}, expiration time.Duration) error {
+func Set(ctx context.Context, key string, value any, expiration time.Duration) error {
 	return RedisClient.Set(ctx, key, value, expiration).Err()
 }
 

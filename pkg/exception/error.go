@@ -16,11 +16,11 @@ var (
 	}
 	ERROR_CODE_UNAUTHORIZED = &Error{
 		Code:    1002,
-		Message: "Unauthorized access",
+		Message: "Unauthorized",
 	}
 	ERROR_CODE_FORBIDDEN = &Error{
 		Code:    1003,
-		Message: "Forbidden access",
+		Message: "Forbidden",
 	}
 	ERROR_INTERNAL_SERVER = &Error{
 		Code:    1004,

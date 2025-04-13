@@ -17,7 +17,6 @@ func GenerateCheckSum(user *entity.User) string {
 }
 
 func CompareCheckSum(str string) bool {
-	// Convert hex string back to bytes
 	hash, err := hex.DecodeString(str)
 	if err != nil {
 		return false

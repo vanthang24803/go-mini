@@ -11,4 +11,5 @@ func SetupMeRoutes(r fiber.Router) {
 	route := r.Group("/me")
 
 	route.Post("/", middleware.HanlderAuthentication(), ctrl.Profile)
+	route.Post("/update", middleware.HanlderAuthentication(), ctrl.UpdateProfile)
 }
