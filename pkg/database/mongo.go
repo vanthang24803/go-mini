@@ -35,11 +35,11 @@ func InitMongoDB(cfg *config.Config) error {
 		client, err := mongo.Connect(ctx, options.Client().ApplyURI(cfg.MongoDB.URI))
 		if err != nil {
 			lastErr = err
-			log.Error(fmt.Sprintf("MongoDB connection attempt %d failed: %v", attempt, err))
+			log.Error(fmt.Sprintf("mongoDB connection attempt %d failed: %v", attempt, err))
 			if attempt == maxRetries {
 				return fmt.Errorf("failed to connect after %d attempts: %v", maxRetries, lastErr)
 			}
-			time.Sleep(2 * time.Second) // Wait before retrying
+			time.Sleep(2 * time.Second)
 			continue
 		}
 
@@ -49,7 +49,7 @@ func InitMongoDB(cfg *config.Config) error {
 			if attempt == maxRetries {
 				return fmt.Errorf("failed to ping after %d attempts: %v", maxRetries, lastErr)
 			}
-			time.Sleep(2 * time.Second) // Wait before retrying
+			time.Sleep(2 * time.Second)
 			continue
 		}
 
@@ -63,16 +63,16 @@ func InitMongoDB(cfg *config.Config) error {
 					continue
 				}
 				lastErr = err
-				log.Error(fmt.Sprintf("Failed to create collection %s: %v", name, err))
+				log.Error(fmt.Sprintf("failed to create collection %s: %v", name, err))
 				if attempt == maxRetries {
 					return fmt.Errorf("failed to create collections after %d attempts: %v", maxRetries, lastErr)
 				}
-				time.Sleep(2 * time.Second) // Wait before retrying
+				time.Sleep(2 * time.Second)
 				continue
 			}
 		}
 
-		log.Info(fmt.Sprintf("Connected to MongoDB ✔️ (attempt %d)", attempt))
+		log.Info(fmt.Sprintf("Connected to MongoDB ✔️ at %d", attempt))
 		return nil
 	}
 
