@@ -12,8 +12,8 @@ import (
 )
 
 type MeController struct {
-	meService *service.MeService
 	log       *zap.Logger
+	meService *service.MeService
 	validate  *validator.Validate
 }
 
@@ -71,4 +71,21 @@ func (c *MeController) UpdateProfile(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.JSON("Update profile successfully!")
+}
+
+func (c *MeController) ActiveAccount(ctx *fiber.Ctx) error {
+	payload, ok := ctx.Locals("info").(*common.JWTClaim)
+
+	if !ok {
+		c.log.Error("unauthorized access attempt during logout")
+		return ctx.Status(fiber.StatusUnauthorized).JSON(exception.ERROR_CODE_UNAUTHORIZED)
+	}
+
+	_, err := c.meService.ActiveAccount(payload.UserID)
+
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(err)
+	}
+
+	return ctx.JSON("Active account successfully!")
 }

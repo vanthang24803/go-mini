@@ -31,6 +31,13 @@ func New() *Config {
 			Password: os.Getenv(constant.REDIS_PASSWORD),
 			DB:       0,
 		},
+		Minio: MinioConfig{
+			Endpoint:        os.Getenv(constant.MINIO_ENDPOINT),
+			AccessKeyID:     os.Getenv(constant.MINIO_ACCESS_KEY_ID),
+			SecretAccessKey: os.Getenv(constant.MINIO_SECRET_ACCESS_KEY),
+			BucketName:      os.Getenv(constant.MINIO_BUCKET_NAME),
+			UseSSL:          os.Getenv(constant.MINIO_USE_SSL) == "true",
+		},
 	}
 }
 

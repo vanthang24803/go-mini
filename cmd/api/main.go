@@ -26,6 +26,12 @@ func main() {
 		log.Fatal("failed to connect to MongoDB", zap.Error(err))
 	}
 
+	err = database.InitRedis(cfg)
+
+	if err != nil {
+		log.Fatal("failed to connect to Redis", zap.Error(err))
+	}
+
 	app := fiber.New(fiber.Config{
 		AppName:               cfg.AppName,
 		DisableStartupMessage: true,

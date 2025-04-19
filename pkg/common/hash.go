@@ -9,7 +9,7 @@ import (
 )
 
 func GenerateCheckSum(user *entity.User) string {
-	str := fmt.Sprintf("%s-%s-%s-%s-%s", user.ID.String(), user.Email, user.Username, user.Role, user.HashedPassword)
+	str := fmt.Sprintf("%s-%s-%s-%s-%s", user.ID.String(), user.Email, user.Username, user.Roles, user.HashedPassword)
 
 	hash := sha256.Sum256([]byte(str))
 

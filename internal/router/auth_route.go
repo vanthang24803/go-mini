@@ -3,7 +3,7 @@ package router
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/vanthang24803/mini/internal/controller"
-	"github.com/vanthang24803/mini/internal/middleware"
+	m "github.com/vanthang24803/mini/internal/middleware"
 )
 
 func SetupAuthRoutes(r fiber.Router) {
@@ -12,5 +12,5 @@ func SetupAuthRoutes(r fiber.Router) {
 
 	route.Post("/login", ctrl.Login)
 	route.Post("/register", ctrl.Register)
-	route.Post("/logout", middleware.HanlderAuthentication(), ctrl.Logout)
+	route.Post("/logout", m.HandlerAuthentication(), ctrl.Logout)
 }

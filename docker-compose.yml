@@ -1,32 +1,29 @@
-version: '3.8'
+version: "3.8"
 
 services:
-  mongodb:
-    image: mongo:latest
-    container_name: mini_mongodb
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USERNAME}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD}
-    ports:
-      - "${MONGODB_PORT}:27017"
-    volumes:
-      - mongodb_data:/data/db
-    networks:
-      - mini_network
+  # mongodb:
+  #   image: mongo:latest
+  #   container_name: mini_mongodb
+  #   environment:
+  #     MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USERNAME}
+  #     MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD}
+  #   ports:
+  #     - "${MONGODB_PORT}:27017"
+  #   volumes:
+  #     - mongodb_data:/data/db
+  #   networks:
+  #     - mini_network
 
-  redis:
-    image: redis:latest
-    container_name: mini_redis
+  valkey:
+    image: valkey/valkey:latest
     ports:
-      - "${REDIS_PORT}:6379"
+      - "6379:6379"
     volumes:
-      - redis_data:/data
-    networks:
-      - mini_network
+      - valkey_data:/data
 
 volumes:
   mongodb_data:
-  redis_data:
+  valkey_data:
 
 networks:
   mini_network:

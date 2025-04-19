@@ -5,6 +5,10 @@ type Error struct {
 	Message string `json:"message"`
 }
 
+func (e *Error) Error() string {
+	return e.Message
+}
+
 var (
 	ERROR_CODE_INVALID_TOKEN = &Error{
 		Code:    1000,
@@ -27,6 +31,7 @@ var (
 		Message: "Internal server error",
 	}
 
+	// ERROR_CODE_NOT_FOUND is returned when the requested resource does not exist.
 	ERROR_CODE_NOT_FOUND = &Error{
 		Code:    2000,
 		Message: "Resource not found",

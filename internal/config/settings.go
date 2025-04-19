@@ -6,6 +6,7 @@ type Config struct {
 	Logger  LoggerConfig
 	MongoDB MongoConfig
 	Redis   RedisConfig
+	Minio   MinioConfig
 }
 
 type MongoConfig struct {
@@ -37,4 +38,12 @@ type RedisConfig struct {
 	Port     string
 	Password string
 	DB       int
+}
+
+type MinioConfig struct {
+	Endpoint        string
+	AccessKeyID     string
+	SecretAccessKey string
+	BucketName      string
+	UseSSL          bool
 }

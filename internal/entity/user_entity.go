@@ -19,10 +19,10 @@ type User struct {
 	Address        string             `bson:"address" json:"address"`
 	DateOfBirth    time.Time          `bson:"date_of_birth" json:"date_of_birth"`
 
-	Role     string `bson:"role" json:"role"`
-	Active   bool   `bson:"active" json:"active"`
-	Version  int    `bson:"version" json:"version"`
-	Timezone string `bson:"timezone" json:"timezone"`
+	Roles    []string `bson:"role" json:"roles"`
+	Active   bool     `bson:"active" json:"active"`
+	Version  int      `bson:"version" json:"version"`
+	Timezone string   `bson:"timezone" json:"timezone"`
 
 	CreatedAt time.Time `bson:"created_at" json:"created_at"`
 	UpdatedAt time.Time `bson:"updated_at" json:"updated_at"`

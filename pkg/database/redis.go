@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -11,10 +12,21 @@ import (
 	"go.uber.org/zap"
 )
 
-var RedisClient *redis.Client
+var redisClient *redis.Client
+
+type Redis interface {
+	Set(ctx context.Context, key string, value any, expiration time.Duration) error
+	Get(ctx context.Context, key string, dest any) error
+	Del(ctx context.Context, keys ...string) error
+}
+
+type RedisService struct {
+	client *redis.Client
+}
 
 func InitRedis(cfg *config.Config) error {
 	log := logger.GetLogger()
+
 	client := redis.NewClient(&redis.Options{
 		Addr:         fmt.Sprintf("%s:%s", cfg.Redis.Host, cfg.Redis.Port),
 		Password:     cfg.Redis.Password,
@@ -26,34 +38,39 @@ func InitRedis(cfg *config.Config) error {
 		PoolTimeout:  time.Second * 3,
 	})
 
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	if err := client.Ping(ctx).Err(); err != nil {
 		log.Error("Redis connection failed", zap.Error(err))
-		return fmt.Errorf("redis connection failed: %v", err)
+		return fmt.Errorf("redis connection failed: %w", err)
 	}
 
-	log.Info("Redis connected successfully",
-		zap.String("host", cfg.Redis.Host),
-		zap.String("port", cfg.Redis.Port))
-
-	RedisClient = client
+	log.Info("Redis connected successfully!")
+	redisClient = client
 	return nil
 }
 
-func GetRedis() *redis.Client {
-	return RedisClient
+func NewRedisService() Redis {
+	return &RedisService{client: redisClient}
 }
 
-func Set(ctx context.Context, key string, value any, expiration time.Duration) error {
-	return RedisClient.Set(ctx, key, value, expiration).Err()
+func (r *RedisService) Set(ctx context.Context, key string, value any, expiration time.Duration) error {
+	bytes, err := json.Marshal(value)
+	if err != nil {
+		return err
+	}
+	return r.client.Set(ctx, key, bytes, expiration).Err()
 }
 
-func Get(ctx context.Context, key string) (string, error) {
-	return RedisClient.Get(ctx, key).Result()
+func (r *RedisService) Get(ctx context.Context, key string, dest any) error {
+	data, err := r.client.Get(ctx, key).Result()
+	if err != nil {
+		return err
+	}
+	return json.Unmarshal([]byte(data), dest)
 }
 
-func Del(ctx context.Context, keys ...string) error {
-	return RedisClient.Del(ctx, keys...).Err()
+func (r *RedisService) Del(ctx context.Context, keys ...string) error {
+	return r.client.Del(ctx, keys...).Err()
 }
